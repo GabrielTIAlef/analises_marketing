@@ -32,7 +32,7 @@ Este projeto foi desenvolvido com foco em:
   
 ---
 
-# Arquitetura da Solução
+# Arquitetura do projeto
 
 ```text
 Excel / CSV
@@ -219,7 +219,7 @@ Com o painel foi possível:
   
 ---
 
-# 🚀 Impacto do Projeto
+# Impacto do Projeto
 
 Com este projeto foi possível:
 
