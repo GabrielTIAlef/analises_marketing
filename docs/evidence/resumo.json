@@ -1,0 +1,31 @@
+{
+  "rows": 180,
+  "selected_k": 3,
+  "selection": "maximum_silhouette_among_eligible",
+  "features": [
+    "idade",
+    "renda_anual",
+    "pontuacao_gastos"
+  ],
+  "seeds": [
+    42,
+    73,
+    101
+  ],
+  "n_init": 20,
+  "minimum_cluster_size": 5,
+  "iqr_flagged_rows": 0,
+  "outlier_policy": "diagnose_only_no_removal",
+  "standard_vs_robust_ari": 1.0,
+  "robust_actual_clusters": 3,
+  "limits": "Estabilidade entre sementes não mede generalização; silhouette não prova segmentos comerciais.",
+  "synthetic": true,
+  "input_sha256": "3093debb854d6ca50f02f5d0fd51938aa28992f3c5a1cf42bf887c4fc52c7a31",
+  "python": "3.12.14",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  }
+}

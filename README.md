@@ -1,231 +1,103 @@
-# Análise Marketing
+# Análises de Marketing — segmentação exploratória
 
-Projeto completo de análise de dados com Machine Learning desenvolvido para apoiar decisões estratégicas de marketing, segmentação de clientes e fidelização através de análise comportamental.
+Python, análise de dados e KMeans para explorar perfis de clientes. A versão pública usa dados inteiramente fictícios, compara alternativas de agrupamento e publica resultados reproduzíveis com controles de qualidade.
 
-A solução foi construída utilizando Python, Power BI e algoritmos de clusterização KMeans, permitindo transformar dados brutos em insights estratégicos para campanhas, retenção e aumento de conversão.
+## Contexto e evolução
 
----
+O estudo original aplicou Pandas, StandardScaler e KMeans a idade, salário anual e pontuação de gastos. Seu objetivo era apoiar a segmentação e a formulação de estratégias de marketing e relacionamento. A evidência publicada era um PDF incompleto de notebook, sem dados ou código executável.
 
-## Objetivos do Projeto
+O README histórico também descrevia Power BI, DAX e quatro páginas de análise: perfil de clientes, comportamento de consumo, campanhas e fidelização. Esses itens permanecem como **contexto relatado do projeto original**: os respectivos dashboards, medidas e resultados comerciais não estão disponíveis para verificação neste repositório. Recorrência, conversão, retenção e redução de custos não são resultados comprovados pelas três variáveis do modelo.
 
-Este projeto foi desenvolvido com foco em:
+A implementação atual recupera o fluxo analítico e acrescenta contratos de entrada, avaliação dos clusters, demonstração sintética, testes e automação de validação. O PDF antigo foi retirado da versão corrente por ser incompleto e conter registros sem origem documentada. Isso não apaga versões históricas. Os dados originais não foram restaurados ou utilizados.
 
-- Compreender o perfil dos clientes
-- Identificar padrões de comportamento
-- Segmentar clientes com KMeans
-- Apoiar campanhas de marketing orientadas com dados
-- Melhorar estratégias de fidelização
-- Reduzir custos de aquisição
-- Aumentar retenção e engajamento
-- Transformar dados em decisões estratégicas
+## O que esta versão demonstra
 
----
+- Validação de um cliente por linha, IDs textuais únicos, tipos e domínios.
+- StandardScaler e KMeans com sementes e número de inicializações explícitos.
+- Comparação de k entre 2 e 6, respeitando viabilidade e tamanho mínimo dos grupos.
+- Silhouette, inércia, estabilidade entre sementes com ARI e comparação com RobustScaler.
+- Perfis em unidades originais, contagens reconciliadas, CSVs, gráficos e manifesto com hashes.
+- Publicação por geração: falhas antes da confirmação preservam a última saída válida.
+- Notebook que usa a mesma implementação dos testes, sem duplicar o algoritmo.
 
-## Tecnologias Utilizadas
+Não é um modelo preditivo supervisionado. A pontuação artificial de gastos não mede frequência de compras, fidelização, gasto monetário ou conversão. Aplicações de marketing são hipóteses para validação posterior.
 
-- Python
-- PowerBI
-- Pandas
-- KMeans
-- ScikitLearn
-- DAX
-  
----
+![Segmentação sobre dados fictícios](docs/evidence/segmentos.png)
 
-# Arquitetura do projeto
+A demonstração de 180 clientes selecionou k=3, com 60 clientes por grupo e silhouette de aproximadamente 0,727. Os três componentes foram desenhados no gerador: o resultado comprova a execução da demonstração, não uma descoberta sobre clientes reais. [Métricas registradas](docs/evidence/comparacao_k.csv).
+
+## Execução rápida — Python 3.12
+
+Na raiz do repositório, crie e ative um ambiente virtual:
+
+```bash
+python -m venv .venv
+```
+
+Windows PowerShell: `.\.venv\Scripts\Activate.ps1`. Linux/macOS: `source .venv/bin/activate`.
+
+```bash
+python -m pip install -r requirements-lock.txt
+python -m pip check
+python scripts/run_analysis.py --demo
+python scripts/run_tests.py
+python scripts/validate_notebook.py
+```
+
+O lock contém dependências de execução e validação do notebook. `requirements.txt` declara o núcleo; `requirements-dev.txt` acrescenta as ferramentas de notebook. Não são necessários credenciais, PostgreSQL, Power BI ou serviços externos. A instalação pode precisar de internet; a análise sintética não consulta serviços externos.
+
+Abra `outputs/demo/latest.json` para localizar a geração confirmada. Ela contém:
+
+| Arquivo | Conteúdo |
+| --- | --- |
+| clientes_segmentados.csv | Uma linha por cliente fictício, três variáveis e cluster |
+| perfis.csv | Contagens, médias, medianas e extremos por grupo |
+| comparacao_k.csv | Métricas e elegibilidade dos candidatos |
+| resumo.json | Decisões, limites, configuração, versões e hash da entrada |
+| segmentos.png | Projeção de renda/pontuação e distribuição dos grupos |
+| avaliacao.png | Inércia e silhouette por k |
+
+Os rótulos dos grupos são arbitrários e não representam os grupos A/B/C descritos no README antigo.
+
+## Exploração e dados próprios
+
+O [notebook](notebooks/segmentacao.ipynb) apresenta o contrato, a comparação de k, os perfis e as limitações. O validador executa todas as células em um kernel temporário do Python ativo, sem instalar kernels globais.
+
+O gerador cria 180 clientes fictícios com três componentes desenhados pelo autor. Isso favorece uma estrutura conhecida para testar o fluxo; não demonstra que uma população real possui três segmentos. Há também uma [amostra fictícia](examples/clientes_ficticios.csv), produzida pelo mesmo gerador com 30 linhas.
+
+Somente para um CSV mínimo que você tenha autorização para utilizar:
+
+```bash
+python scripts/run_analysis.py --input data/clientes.csv --output outputs/local
+python scripts/run_analysis.py --demo --k 3
+```
+
+O comando não transmite dados. Entradas devem seguir o [contrato](docs/CONTRATO_DADOS.md); campos extras são rejeitados. Dados próprios não são marcados como sintéticos, e a ferramenta não certifica anonimização, origem ou autorização. Entradas e saídas locais são ignoradas pelo Git.
+
+## Arquitetura
 
 ```text
-Excel / CSV
-      ↓
-ETL e Limpeza de Dados
-      ↓
-Python + Pandas
-      ↓
-Machine Learning (KMeans)
-      ↓
-Segmentação de Clientes
-      ↓
-Power BI
+Gerador sintético / CSV autorizado
+             ↓
+Contrato e validação estrita
+             ↓
+StandardScaler → comparação de KMeans
+             ↓
+Perfis, estabilidade e sensibilidade
+             ↓
+Geração imutável com CSV + JSON + PNG
+             ↓
+latest.json confirma a publicação
 ```
----
 
-# Pipeline Analítico
+`src/marketing/` concentra contratos, geração, modelo, gráficos e publicação. `scripts/` fornece os comandos; `tests/` verifica comportamento e falhas; `notebooks/` oferece a exploração; `.github/workflows/` define a validação automatizada. Nenhum banco foi adicionado porque não é necessário para este fluxo.
 
-O projeto foi estruturado para simular um fluxo completo de análise de marketing e CRM, desde a preparação dos dados até a segmentação automatizada dos clientes.
+## Metodologia, testes e limites
 
-## Extração
+Consulte a [metodologia](docs/METODOLOGIA.md), a [validação efetivamente realizada](docs/VALIDACAO.md), o [guia de reprodução](docs/REPRODUCAO.md) e os [cuidados com dados](SECURITY.md).
 
-- Leitura de arquivos CSV
-- Estruturação da base de clientes
-- Importação para análise exploratória
+O workflow executa instalação fixada, verificação de dependências, testes, demonstração e notebook em Python 3.12. Sua presença não equivale a uma execução aprovada no GitHub: o estado observado é registrado no documento de validação.
 
-## Transformação
+Os testes cobrem dados inválidos, reprodutibilidade, reconciliação, casos degenerados, saída anterior preservada sob falha e execução fora da pasta do projeto. Métricas sintéticas e estabilidade entre sementes são evidências técnicas limitadas; não comprovam generalização temporal ou impacto de campanhas.
 
-- Limpeza e padronização dos dados
-- Conversão de variáveis
-- Preparação para ML
-- Tratamento de inconsistências
-
-## Modelagem Analítica
-
-- Padronização das variáveis com StandardScaler
-- Clusterização utilizando KMeans
-- Identificação automática de perfis de clientes
-- Criação de segmentos estratégicos
-
----
-
-# KMeans – Segmentação de Clientes
-
-Foi utilizado o algoritmo KMeans para segmentação dos clientes em clusters com características semelhantes.
-
-## Variáveis Utilizadas
-
-- Idade
-- Salário Anual
-- Pontuação de Gastos
-
-## Estrutura do Modelo
-
-## Segmentos Identificados
-
-### Grupo A
-Alta recorrência e alto gasto médio
-
-- Clientes fiéis
-- Alto potencial de retenção
-- Maior valor estratégico
-
-### Grupo B
-Recorrência intermediária
-
-- Potencial de crescimento
-- Clientes em desenvolvimento
-
-### Grupo C
-Baixa recorrência e baixo gasto
-
-- Baixo engajamento
-- Necessidade de campanhas específicas
-  
----
-
-# Diferenciais Técnicos
-
-- Clusterização com KMeans 
-- Padronização de variáveis com StandardScaler
-- Análise comportamental de clientes
-- Estrutura pronta para expansão analítica  
-
----
-
-# Estrutura do Painel
-
-O dashboard foi dividido em quatro páginas analíticas principais.
-
----
-
-# Perfil dos Clientes
-
-Página focada na análise demográfica e identificação do público ideal.
-
-## Principais Recursos
-
-- Idade
-- Gênero
-- Renda anual
-- Perfil de fidelização
-- Características predominantes
-  
----
-
-# Comportamento de Consumo
-
-Página voltada para análise comportamental e padrões de compra.
-
-## Principais Recursos
-
-- Frequência de compras
-- Valor médio gasto
-- Produtos mais procurados
-- Ciclo de recompra
-- Tendências de consumo
-
----
-
-# Campanhas de Marketing
-
-Página destinada a análise de performance das campanhas.
-
-## Principais Recursos
-
-- Conversão por campanha
-- Segmentos mais responsivos
-- Correlação entre campanhas e vendas
-- Análise de impacto comercial
-
----
-
-# Fidelização e Clusters
-
-Página focada na visualização dos clusters criados pelo algoritmo KMeans.
-
-## Principais Recursos
-
-- Segmentação automática
-- Distribuição dos clusters
-- Clientes mais valiosos
-- Potencial de fidelização
-- Análise preditiva comportamental
-
----
-
-# Insights Estratégicos
-
-Com o painel foi possível:
-
-- Identificar clientes com maior potencial de fidelização
-- Melhorar campanhas de marketing
-- Segmentar clientes por comportamento
-- Apoiar estratégias de retenção
-- Reduzir custos de aquisição
-- Direcionar campanhas com maior assertividade
-- Detectar padrões de consumo
-
----
-
-# Estrutura Analítica
-
-## ETL
-- Excel
-- Power BI
-- Tratamento de dados
-
-## EDA
-- Python
-- Pandas
-- Power Query
-- Linguagem M
-
-## Machine Learning
-- KMeans
-- Clusterização
-- StandardScaler
-
-## Visualização
-- Power BI
-- Dashboards interativos
-- KPIs estratégicos
-  
----
-
-# Impacto do Projeto
-
-Com este projeto foi possível:
-
-- Transformar dados em decisões estratégicas
-- Melhorar a compreensão do comportamento dos clientes
-- Direcionar campanhas com maior eficiência
-- Apoiar estratégias de retenção
-- Identificar grupos de maior valor comercial
-- Simular cenários reais de marketing analítico
+Os CSVs podem ser importados no Power BI conforme o [guia de BI](docs/POWER_BI.md). A versão pública entrega gráficos estáticos; não publica PBIX nem afirma execução de Power BI Desktop ou validação de DAX.

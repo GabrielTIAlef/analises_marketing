@@ -1,8 +1,5 @@
-pandas
-numpy
-scikit-learn
-matplotlib
-seaborn
-openpyxl
-jupyter
-powerbi-client
+numpy>=2.0,<3
+pandas>=2.2,<4
+scikit-learn>=1.6,<2
+matplotlib>=3.9,<4
+threadpoolctl>=3.5,<4
