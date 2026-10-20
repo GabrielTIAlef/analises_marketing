@@ -1,9 +1,19 @@
 __pycache__/
 .ipynb_checkpoints/
+*.py[cod]
+.venv*/
+data/
+outputs/
+.local-test/
 
 *.pbix
 *.xlsx
 *.csv
+!examples/*.csv
+!docs/evidence/*.csv
 
 .env
+.env.*
+*.pem
+*.key
 venv/

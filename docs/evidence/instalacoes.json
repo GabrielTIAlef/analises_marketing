@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-20",
+  "environment": "Windows, Python 3.12.14",
+  "first_install": {
+    "source": "requirements-dev.txt",
+    "tests_run": 43,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 37.965,
+    "notebook_code_cells": 6,
+    "notebook_successful": true,
+    "synthetic_demo_successful": true,
+    "pip_check": "passed"
+  },
+  "second_install": {
+    "source": "requirements-lock.txt in an empty virtual environment",
+    "tests_run": 43,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 34.310,
+    "notebook_code_cells": 6,
+    "notebook_successful": true,
+    "synthetic_demo_successful": true,
+    "pip_check": "passed"
+  },
+  "remote_ci": "not_executed_yet",
+  "corporate_systems_accessed": false
+}
