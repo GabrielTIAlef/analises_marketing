@@ -1,6 +1,8 @@
 # Análises de Marketing — segmentação exploratória
 
-Python, análise de dados e KMeans para explorar perfis de clientes. A versão pública usa dados inteiramente fictícios, compara alternativas de agrupamento e publica resultados reproduzíveis com controles de qualidade.
+Segmentar clientes exige entender quais diferenças os dados permitem descrever e como elas podem orientar hipóteses de marketing. Este estudo apresenta meu raciocínio em **análise exploratória, preparação de variáveis e segmentação com KMeans**.
+
+O objetivo é mostrar como passo da pergunta à escolha do método, comparo agrupamentos e interpreto seus limites. A versão pública usa dados fictícios: os perfis permitem avaliar a análise, sem atribuir comportamento ou resultado comercial a clientes reais.
 
 ## Contexto e evolução
 
@@ -9,6 +11,20 @@ O estudo original aplicou Pandas, StandardScaler e KMeans a idade, salário anua
 O README histórico também descrevia Power BI, DAX e quatro páginas de análise: perfil de clientes, comportamento de consumo, campanhas e fidelização. Esses itens permanecem como **contexto relatado do projeto original**: os respectivos dashboards, medidas e resultados comerciais não estão disponíveis para verificação neste repositório. Recorrência, conversão, retenção e redução de custos não são resultados comprovados pelas três variáveis do modelo.
 
 A implementação atual recupera o fluxo analítico e acrescenta contratos de entrada, avaliação dos clusters, demonstração sintética, testes e automação de validação. O PDF antigo foi retirado da versão corrente por ser incompleto e conter registros sem origem documentada. Isso não apaga versões históricas. Os dados originais não foram restaurados ou utilizados.
+
+## Pergunta analítica e escolhas do estudo
+
+A pergunta é se idade, renda anual e pontuação de gastos permitem descrever
+perfis distintos na base. A contribuição apresentada vai além de executar o
+KMeans: envolve decidir como comparar variáveis, avaliar agrupamentos e comunicar
+o que eles permitem concluir.
+
+| Escolha | Por que ela importa na análise | Onde avaliar |
+| --- | --- | --- |
+| Padronizar as variáveis | A escala da renda não deve dominar a distância apenas por sua unidade | [Modelo e comparação](src/marketing/model.py) |
+| Comparar alternativas de k | O número de grupos precisa de critério, não só de um gráfico visualmente atraente | [Metodologia](docs/METODOLOGIA.md) |
+| Examinar estabilidade e outro escalonador | Uma segmentação útil merece avaliação de sensibilidade | [Métricas registradas](docs/evidence/comparacao_k.csv) |
+| Descrever perfis em unidades originais | Os grupos precisam ser compreensíveis para discussão de negócio | [Perfis calculados](docs/evidence/perfis.csv) |
 
 ## O que esta versão demonstra
 
@@ -25,6 +41,21 @@ Não é um modelo preditivo supervisionado. A pontuação artificial de gastos n
 ![Segmentação sobre dados fictícios](docs/evidence/segmentos.png)
 
 A demonstração de 180 clientes selecionou k=3, com 60 clientes por grupo e silhouette de aproximadamente 0,727. Os três componentes foram desenhados no gerador: o resultado comprova a execução da demonstração, não uma descoberta sobre clientes reais. [Métricas registradas](docs/evidence/comparacao_k.csv).
+
+## Como interpretar o resultado apresentado
+
+Nos perfis sintéticos publicados, o grupo 1 combina renda média próxima de
+52,7 mil com pontuação média de gastos de 83,6; o grupo 2 tem renda média maior,
+próxima de 92,6 mil, e pontuação menor, de 38,4. A leitura relevante é que renda
+e pontuação não devem ser tratadas como o mesmo atributo.
+
+Esses valores vêm de [perfis.csv](docs/evidence/perfis.csv) e descrevem apenas
+a amostra construída. Eles permitem discutir hipóteses de relacionamento
+diferenciado, mas a escolha de campanha dependeria de dados adicionais e
+validação. Não demonstram aumento de conversão, retenção ou retorno financeiro.
+
+<details>
+<summary>Reproduzir a análise e examinar os arquivos gerados</summary>
 
 ## Execução rápida — Python 3.12
 
@@ -58,6 +89,8 @@ Abra `outputs/demo/latest.json` para localizar a geração confirmada. Ela cont�
 | avaliacao.png | Inércia e silhouette por k |
 
 Os rótulos dos grupos são arbitrários e não representam os grupos A/B/C descritos no README antigo.
+
+</details>
 
 ## Exploração e dados próprios
 
@@ -96,7 +129,7 @@ latest.json confirma a publicação
 
 Consulte a [metodologia](docs/METODOLOGIA.md), a [validação efetivamente realizada](docs/VALIDACAO.md), o [guia de reprodução](docs/REPRODUCAO.md) e os [cuidados com dados](SECURITY.md).
 
-O workflow executa instalação fixada, verificação de dependências, testes, demonstração e notebook em Python 3.12. Sua presença não equivale a uma execução aprovada no GitHub: o estado observado é registrado no documento de validação.
+O workflow executa instalação fixada, verificação de dependências, testes, demonstração e notebook em Python 3.12. A [execução da versão publicada](https://github.com/GabrielTIAlef/analises_marketing/actions/runs/39491953432) estava aprovada na consulta de 13/11/2026; os resultados detalhados e seu escopo estão no documento de validação. Esta revisão textual não reexecutou a análise.
 
 Os testes cobrem dados inválidos, reprodutibilidade, reconciliação, casos degenerados, saída anterior preservada sob falha e execução fora da pasta do projeto. Métricas sintéticas e estabilidade entre sementes são evidências técnicas limitadas; não comprovam generalização temporal ou impacto de campanhas.
 
